@@ -55,30 +55,61 @@ const DashboardComun = () => {
         
       }
       const getLicenciados = async ()=>{
-        const response  = await api.get(`/admin/detailed/licenseds?page=${page}`);
+        if(menuSelected===1){
+            const response  = await api.get(`/admin/detailed/licenseds?limit=null`);
+            console.log(response)
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
         setTotal(response.data.total)
         const result = sumFields(response.data.content);
         setDash(result)   
-        console.log(result)
         setTotalLi(response.data.total)
+        }else{
+            const response  = await api.get(`/admin/detailed/licenseds?page=${page}`);
+            setUsers(response.data.content)
+            dividePor10eArredonda(response.data.total)
+            setTotal(response.data.total)
+            const result = sumFields(response.data.content);
+            setDash(result)   
+            setTotalLi(response.data.total)
+        }
+
       }
       const getPassageiros = async ()=>{
-        const response  = await api.get(`/admin/detailed/passengers?page=${page}`);
+        if(menuSelected===1){
+            const response  = await api.get(`/admin/detailed/passengers?limit=null`);
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
         setTotal(response.data.total)
         setTotalPassageiro(response.data.total)
 
+        }else{
+            const response  = await api.get(`/admin/detailed/passengers?page=${page}`);
+            setUsers(response.data.content)
+            dividePor10eArredonda(response.data.total)
+            setTotal(response.data.total)
+            setTotalPassageiro(response.data.total)
+        }
+        
+
 
       }
       const getMotoristas = async ()=>{
-        const response  = await api.get(`/admin/detailed/drivers?page=${page}`);
-        setUsers(response.data.content)
-        dividePor10eArredonda(response.data.total)
-        setTotal(response.data.total)
-        setTotalMotorista(response.data.total)
+        if(menuSelected===1){
+            const response  = await api.get(`/admin/detailed/drivers?limit=null`);
+            setUsers(response.data.content)
+            dividePor10eArredonda(response.data.total)
+            setTotal(response.data.total)
+            setTotalMotorista(response.data.total)
+        }else{
+            const response  = await api.get(`/admin/detailed/drivers?page=${page}`);
+            setUsers(response.data.content)
+            dividePor10eArredonda(response.data.total)
+            setTotal(response.data.total)
+            setTotalMotorista(response.data.total)
+           
+        }
+      
 
 
       }
@@ -115,8 +146,13 @@ const DashboardComun = () => {
                   finishedTrips += item.app.trips.finished;
                 });
               
-                return { weptec: weptecSum, licensed: licensedSum, total: totalSum, canceledTrips, finishedTrips };
+                const formattedWeptec = weptecSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const formattedLicensed = licensedSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const formattedTotal = totalSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+              
+                return { weptec: formattedWeptec, licensed: formattedLicensed, total: formattedTotal, canceledTrips, finishedTrips };
               }
+              
               
                  
           const handleSelect = (user:any)=>{
@@ -285,19 +321,19 @@ const DashboardComun = () => {
                            <div>
                                 <Styled.Card>
                                     <p>Faturamento Total</p>
-                                    <p>R${dash?.total}</p>
+                                    <p>{dash?.total}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Faturamento Licenciado</p>
-                                    <p>R$ {dash?.licensed}</p>
+                                    <p> {dash?.licensed}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Faturamento Weptek</p>
-                                    <p>R$ {dash?.weptec}</p>
+                                    <p> {dash?.weptec}</p>
 
                                         
                                 </Styled.Card>
