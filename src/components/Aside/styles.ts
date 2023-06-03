@@ -56,6 +56,7 @@ export const DivData = styled.div`
     height: 100%;
    
     div{
+      max-width: 100%;
       p{
          font-family: 'Comfortaa';
           font-weight:500;

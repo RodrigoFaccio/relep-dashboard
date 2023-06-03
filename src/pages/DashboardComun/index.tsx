@@ -254,6 +254,8 @@ const DashboardComun = () => {
                            <>
                             <th>Status</th>
                             <th>Nome</th>
+                            <th>Domínio</th>
+
                              <th>Numero</th>
                             <th>Cidade</th>
                             <th>Logo</th>
@@ -265,6 +267,8 @@ const DashboardComun = () => {
                             <>
                             <th>Status</th>
                             <th>Nome</th>
+                            <th>Domínio</th>
+
                              <th>Numero</th>
                             <th>Email</th>
                             <th>Logo</th>
@@ -279,7 +283,7 @@ const DashboardComun = () => {
                     <tbody>
                        {
                         users.length>0 && 
-                            users?.map((user:any)=> {
+                            users?.slice(0,10).map((user:any)=> {
                                 if(menuSelected===2){
                                     
                                     return (

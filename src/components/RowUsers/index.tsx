@@ -21,6 +21,10 @@ const RowUsers = ({ data, onClick }: TableProps) => {
            {data.name}
         </td>
         <td>
+        <a href={'weptek.app/'+data.app.domain}>weptek.app/{ data.app.domain}</a>
+
+        </td>
+        <td>
             {data.phone}
         </td>
         <td>

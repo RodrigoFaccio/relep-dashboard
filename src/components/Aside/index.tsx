@@ -60,7 +60,18 @@ const Aside = ({data}:AsideProps) => {
                        {user?.name}
                     </p>
                 </div>
-               
+                {
+                    data.app.domain &&(
+                        <div>
+                    <label>
+                        Domínio
+                    </label>
+                   <p>
+                   <a href={'weptek.app/'+data.app.domain}>weptek.app/{ data.app.domain}</a>
+                   </p>
+                </div>
+                    )
+                }
 
 
                     
@@ -110,6 +121,7 @@ const Aside = ({data}:AsideProps) => {
                     {user?.email}
                     </p>
                 </div>
+               
                                 
             </Styled.DivData>
             <Styled.DivData>
