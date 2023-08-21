@@ -22,6 +22,7 @@ const DashboardComun = () => {
     const [totalPassageiro, setTotalPassageiro] = useState(0);
     const [totalMotorista, setTotalMotorista] = useState(0);
 
+    const [searchName, setSearchName] = useState('');
 
 
     const [dash, setDash] = useState<any>();
@@ -33,6 +34,10 @@ const DashboardComun = () => {
     const handleChange = (event: ChangeEvent<unknown>, value: number) => {
       setPage(value);
     };
+    const getGains = async () => {
+        const {data} = await api.get('/admin/statistics')
+        setDash(data)
+    };
    
     function dividePor10eArredonda(valor:number) {
         const resultado = Math.ceil(valor / 10);
@@ -40,51 +45,40 @@ const DashboardComun = () => {
         return resultado;
     }
       
-    function pesquisaPorNome( nome:string) {
-        console.log(nome)
-        if(nome===''){
-            setReload(!reload)
-        }else{
-            const resultado = users.filter((objeto:any) =>
-            objeto.name.toLowerCase().includes(nome.toLowerCase())
-            );
-            
-           setUsers(resultado)
-            return resultado;
-        }
+    function pesquisaPorNome( name:string) {
+        setSearchName(name)
         
-      }
+    }
       const getLicenciados = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/licenseds?limit=null`);
+            const response  = await api.get(`/admin/detailed/licenseds?limit=10&name=${searchName}`);
             console.log(response)
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
         setTotal(response.data.total)
         const result = sumFields(response.data.content);
-        setDash(result)   
+           
         setTotalLi(response.data.total)
         }else{
-            const response  = await api.get(`/admin/detailed/licenseds?page=${page}`);
+            const response  = await api.get(`/admin/detailed/licenseds?page=${page}&name=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
             const result = sumFields(response.data.content);
-            setDash(result)   
             setTotalLi(response.data.total)
         }
 
       }
       const getPassageiros = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/passengers?limit=null`);
+            const response  = await api.get(`/admin/detailed/passengers?limit=10&name=${searchName}`);
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
         setTotal(response.data.total)
         setTotalPassageiro(response.data.total)
 
         }else{
-            const response  = await api.get(`/admin/detailed/passengers?page=${page}`);
+            const response  = await api.get(`/admin/detailed/passengers?page=${page}&name=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
@@ -96,13 +90,13 @@ const DashboardComun = () => {
       }
       const getMotoristas = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/drivers?limit=null`);
+            const response  = await api.get(`/admin/detailed/drivers?limit=10&name=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
             setTotalMotorista(response.data.total)
         }else{
-            const response  = await api.get(`/admin/detailed/drivers?page=${page}`);
+            const response  = await api.get(`/admin/detailed/drivers?page=${page}&name=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
@@ -118,7 +112,8 @@ const DashboardComun = () => {
                 if(menuSelected===1){
                    getLicenciados()
                    getPassageiros()
-                   getMotoristas()
+                   getMotoristas();
+                   getGains()
                 }else if(menuSelected===2){
                     getLicenciados()                
                 }else if(menuSelected===3){
@@ -130,7 +125,7 @@ const DashboardComun = () => {
                 
                 
               
-            }, [page,reload]);
+            }, [page,reload,searchName]);
             function sumFields(datas:any) {
                 let weptecSum = 0;
                 let licensedSum = 0;
@@ -325,19 +320,19 @@ const DashboardComun = () => {
                            <div>
                                 <Styled.Card>
                                     <p>Faturamento Total</p>
-                                    <p>{dash?.total}</p>
+                                    <p>{dash?.gains.total}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Faturamento Licenciado</p>
-                                    <p> {dash?.licensed}</p>
+                                    <p> {dash?.gains.licensed}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Faturamento Weptek</p>
-                                    <p> {dash?.weptec}</p>
+                                    <p> {dash?.gains.weptec}</p>
 
                                         
                                 </Styled.Card>
@@ -346,20 +341,20 @@ const DashboardComun = () => {
                            <div>
                                 <Styled.Card>
                                     <p>Viagens finalizadas</p>
-                                    <p>{dash?.finishedTrips}</p>
+                                    <p>{dash?.trips.finished}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Viagens canceladas</p>
-                                    <p>{dash?.canceledTrips}</p>
+                                    <p>{dash?.trips.canceled}</p>
 
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
-                                    <p>Viagens canceladas</p>
-                                    <p>0</p>
+                                    <p>Viagens em andamento</p>
+                                    <p>{dash?.trips.running}</p>
 
 
                                         
@@ -376,13 +371,13 @@ const DashboardComun = () => {
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Passageiros</p>
-                                    <p>{totalPassageiro}</p>
+                                    <p>{dash?.passengers}</p>
 
                                         
                                 </Styled.Card>
                                 <Styled.Card>
                                     <p>Motoristas</p>
-                                    <p>{totalMotorista}</p>
+                                    <p>{dash?.drivers}</p>
 
                                         
                                 </Styled.Card>
