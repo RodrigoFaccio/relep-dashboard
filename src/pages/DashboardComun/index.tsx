@@ -51,7 +51,7 @@ const DashboardComun = () => {
     }
       const getLicenciados = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/licenseds?limit=10&name=${searchName}`);
+            const response  = await api.get(`/admin/detailed/licenseds?limit=10&${selectedOption}=${searchName}`);
             console.log(response)
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
@@ -60,7 +60,7 @@ const DashboardComun = () => {
            
         setTotalLi(response.data.total)
         }else{
-            const response  = await api.get(`/admin/detailed/licenseds?page=${page}&name=${searchName}`);
+            const response  = await api.get(`/admin/detailed/licenseds?page=${page}&${selectedOption}=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
@@ -71,7 +71,7 @@ const DashboardComun = () => {
       }
       const getPassageiros = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/passengers?limit=10&name=${searchName}`);
+            const response  = await api.get(`/admin/detailed/passengers?limit=10&${selectedOption}=${searchName}`);
         setUsers(response.data.content)
         dividePor10eArredonda(response.data.total)
         setTotal(response.data.total)
@@ -90,7 +90,7 @@ const DashboardComun = () => {
       }
       const getMotoristas = async ()=>{
         if(menuSelected===1){
-            const response  = await api.get(`/admin/detailed/drivers?limit=10&name=${searchName}`);
+            const response  = await api.get(`/admin/detailed/drivers?limit=10&${selectedOption}=${searchName}`);
             setUsers(response.data.content)
             dividePor10eArredonda(response.data.total)
             setTotal(response.data.total)
@@ -188,6 +188,11 @@ const DashboardComun = () => {
           
             
       }
+      const [selectedOption, setSelectedOption] = useState('');
+
+      const handleSelectChange = (event:any) => {
+        setSelectedOption(event.target.value);
+      };
       
     return (
         <Styled.Container>
@@ -238,10 +243,15 @@ const DashboardComun = () => {
                 menuSelected >=2 ?(
                     <>
                     <Styled.SearchDiv>
-                <Styled.SearchInput placeholder='Pesquisar' onChange={(e)=>pesquisaPorNome(e.target.value)}/>
+                        <Styled.SearchInput placeholder='Pesquisar' onChange={(e)=>pesquisaPorNome(e.target.value)}/>
+                        <Styled.Select value={selectedOption} onChange={handleSelectChange}>
+        <option value="cpf">CPF</option>
+        <option value="name">Nome</option>
+        <option value="email">Email</option>
+      </Styled.Select>
+                        </Styled.SearchDiv>
 
-            </Styled.SearchDiv>
-            <Styled.TableAside>
+                    <Styled.TableAside>
                   <Styled.Table>
                 <thead>
                     {

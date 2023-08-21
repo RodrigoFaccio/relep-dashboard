@@ -171,3 +171,9 @@ color: #000000;
 }
 
 `
+export const Select = styled.select`
+  height: 40px;
+  border-radius: 8px;
+
+  margin-left: 20px;
+ `;
